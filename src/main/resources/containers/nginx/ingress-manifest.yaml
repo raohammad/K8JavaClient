@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginxtest
+spec:
+  rules:
+    - host: 88.121.175.50.nip.io
+      http:
+        paths: /
+        backend:
+          sericeName: nginxtest
+          servicePort: 80
