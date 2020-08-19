@@ -23,8 +23,9 @@ public class KubernetesTest {
 
     public static void main(String[] args) throws IOException, ApiException {
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        String podmanifest = classloader.getResource("test-svc.yaml").getPath();
-        String deploymanifest = classloader.getResource("test-deployment.yaml").getPath();
+        //String podmanifest = classloader.getResource("test-svc.yaml").getPath();
+        //String servicemanifest = classloader.getResource("test-deployment.yaml").getPath();
+        String deploymanifest = classloader.getResource("containers/nginx/manifests/deployment-manifest.yaml").getPath();
 
         String kubeConfig = "/var/snap/microk8s/current/credentials/client.config";
         ApiClient client = ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader(kubeConfig))).build();
@@ -149,6 +150,7 @@ public class KubernetesTest {
 
         // Read yaml configuration file, and deploy it
         ApiClient client = cl;
+        client.setDebugging(true);
         Configuration.setDefaultApiClient(client);
 
         //  See issue #474. Not needed at most cases, but it is needed if you are using war
@@ -159,7 +161,9 @@ public class KubernetesTest {
         File file = new File(manifest);
         V1Deployment yamlDeploiment = (V1Deployment) Yaml.load(file);
         V1ObjectMeta objectMeta = yamlDeploiment.getMetadata();
-        objectMeta.setName("Hello-Ass-Name As");
+        objectMeta.setName("vx");
+        V1DeploymentSpec deploymentSpec;
+
         System.out.println(yamlDeploiment);
 
         // Deployment and StatefulSet is defined in apps/v1, so you should use AppsV1Api instead of
@@ -169,6 +173,7 @@ public class KubernetesTest {
 //        System.out.println(creatPodResult);
 
         V1Deployment createPodTemplateResult = api.createNamespacedDeployment("default", yamlDeploiment, null, null, null);
+        api.createNamespacedDeploymentAsync
         System.out.println(createPodTemplateResult);
 
 //        V1Status deleteResult =
